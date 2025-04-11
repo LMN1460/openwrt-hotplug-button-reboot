@@ -1,0 +1,20 @@
+logger "the button was ${BUTTON} and the action was ${ACTION}"
+if [ $BUTTON == "wps" ] ; 
+    then
+        if [ $ACTION == "pressed" ] ;
+        then
+            echo $(date +%s) > /tmp/button.txt
+            logger "wps press time logged"
+        elif [ $ACTION == "released" ] ;
+            then
+                TIMECHECK=$(cat /tmp/button.txt)
+                DURATION=$(($(date +%s) - $TIMECHECK))
+                logger "wps release time logged"
+                logger "press duration was ${DURATION}"
+                if [ $DURATION -ge 10 ] ;
+                    then
+                        logger "[!!] 10s button hold, rebooting! [!!]"
+                        reboot
+                fi
+        fi
+fi
